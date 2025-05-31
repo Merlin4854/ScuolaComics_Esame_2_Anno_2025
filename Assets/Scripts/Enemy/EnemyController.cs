@@ -2,6 +2,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public static class GameEvents
+{
+    public static System.Action<int> OnBaseDamaged;
+}
+
 public class EnemyController : MonoBehaviour
 {
     [Header("Path")]
@@ -13,7 +18,7 @@ public class EnemyController : MonoBehaviour
 
     [Header("Health")]
     [SerializeField] float maxHealth = 10f;
-    [SerializeField] float currentHealth;
+    private float currentHealth;
     [SerializeField] GameObject canvasLife;
     [SerializeField] Image lifeBar;
 
@@ -23,14 +28,31 @@ public class EnemyController : MonoBehaviour
     [Header("Graphics")]
     [SerializeField] SpriteRenderer graphicsObject;
 
-    // TODO: Modificare lo script in modo che si usi il RigidBody2D per il movimento invece che transform.position
+    private Rigidbody2D rb;
 
     private void Start()
     {
         currentHealth = maxHealth;
+        rb = GetComponent<Rigidbody2D>();
+        if (rb == null)
+            Debug.LogError("Rigidbody2D component missing from EnemyController object.");
+
+        if (canvasLife != null)
+            canvasLife.SetActive(false);
     }
 
-    private void Update()
+    private void OnEnable()
+    {
+        currentHealth = maxHealth;
+        currentPointIndex = 0;
+        if (canvasLife != null)
+        {
+            canvasLife.SetActive(false);
+            lifeBar.fillAmount = 1f;
+        }
+    }
+
+    private void FixedUpdate()
     {
         FollowPath();
     }
@@ -39,14 +61,16 @@ public class EnemyController : MonoBehaviour
     {
         if (pathPoints == null || pathPoints.Count == 0) return;
 
-        Vector3 targetPoint = pathPoints[currentPointIndex].position;
-        Vector3 direction = (targetPoint - transform.position).normalized;
+        Vector2 currentPosition = rb.position;
+        Vector2 targetPoint = pathPoints[currentPointIndex].position;
+        Vector2 direction = (targetPoint - currentPosition).normalized;
 
-        transform.position += direction * speed * Time.deltaTime;
+        Vector2 newPos = currentPosition + direction * speed * Time.fixedDeltaTime;
+        rb.MovePosition(newPos);
 
         UpdateGraphicsRotation(direction);
 
-        if (Vector3.Distance(transform.position, targetPoint) < 0.1f)
+        if (Vector2.Distance(newPos, targetPoint) < 0.1f)
         {
             currentPointIndex++;
             if (currentPointIndex >= pathPoints.Count)
@@ -54,7 +78,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    private void UpdateGraphicsRotation(Vector3 direction)
+    private void UpdateGraphicsRotation(Vector2 direction)
     {
         if (graphicsObject == null) return;
 
@@ -90,11 +114,9 @@ public class EnemyController : MonoBehaviour
         graphicsObject.transform.localEulerAngles = new Vector3(0f, 0f, angle);
     }
 
-
-
     private void ReachExit()
     {
-        // TODO: In che modo possiamo togliere la vita alla Base del giocatore senza avere un riferimento diretto?
+        GameEvents.OnBaseDamaged?.Invoke(damageToPlayer);
         Die();
     }
 
@@ -102,17 +124,27 @@ public class EnemyController : MonoBehaviour
     {
         currentHealth -= amount;
 
-        if (!canvasLife.activeSelf)
+        if (canvasLife != null && !canvasLife.activeSelf)
             canvasLife.SetActive(true);
 
-        lifeBar.fillAmount = currentHealth / maxHealth;
+        if (lifeBar != null)
+            lifeBar.fillAmount = currentHealth / maxHealth;
 
         if (currentHealth <= 0f) Die();
     }
 
     private void Die()
     {
-        // TODO: Si potrebbe fare di meglio? Come possiamo non eliminare l'oggetto e usarlo in un altro modo?
-        Destroy(gameObject);
+        // pooling reuse
+        currentHealth = maxHealth;
+        currentPointIndex = 0;
+
+        if (canvasLife != null)
+        {
+            canvasLife.SetActive(false);
+            lifeBar.fillAmount = 1f;
+        }
+
+        gameObject.SetActive(false);
     }
 }

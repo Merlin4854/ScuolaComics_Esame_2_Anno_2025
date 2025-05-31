@@ -23,10 +23,13 @@ public class TowerGridManager : MonoBehaviour
     public Transform gridParent;
     public Transform towerParent;
 
+    private bool justPlacedTower = false;
+
     private CellType[,] grid;
     private GameObject[,] gridVisual;
 
     private TurretButton selectedTurretButton;
+    private List<GameObject> placedTowers = new List<GameObject>();//
 
     private void OnValidate()
     {
@@ -61,9 +64,13 @@ public class TowerGridManager : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
+            if (EventSystem.current.IsPointerOverGameObject(-1))
+                return;
+
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2Int cell = WorldToCell(mouseWorldPos);
             TryPlaceTower(cell);
+            Debug.Log("Tower");
         }
     }
 
@@ -136,8 +143,22 @@ public class TowerGridManager : MonoBehaviour
             Vector3 spawnPos = transform.position + new Vector3(cell.x * cellSize + cellSize / 2f, cell.y * cellSize + cellSize / 2f);
             Instantiate(selectedTurretButton.TurretPrefab, spawnPos, Quaternion.identity, towerParent);
             grid[cell.x, cell.y] = CellType.Tower;
-        }
+            
+            GameObject newTower = Instantiate(selectedTurretButton.TurretPrefab, spawnPos, Quaternion.identity, towerParent);//
+            placedTowers.Add(newTower);
+        }        
     }
+
+    public GameObject GetTowerFromChild(Transform clickedTransform)//
+    {
+        foreach (GameObject tower in placedTowers)
+        {
+            if (clickedTransform.IsChildOf(tower.transform))
+                return tower;
+        }
+        return null;
+    }
+
 
     private bool InBounds(Vector2Int c) =>
         c.x >= 0 && c.x < width && c.y >= 0 && c.y < height;

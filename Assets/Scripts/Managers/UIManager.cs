@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -7,30 +6,33 @@ public class UIManager : MonoBehaviour
 {
     [Header("Turret Buttons")]
     public List<TurretButton> turretButtons;
-    [SerializeField] TextMeshProUGUI playerCoins;
+    [SerializeField] private TextMeshProUGUI playerCoins;
 
-    private void Start()
+    private void OnEnable()
     {
-        UpdateTurretButtons();
+        GameManager.Instance.OnCoinsChanged += OnCoinsChanged;
+        OnCoinsChanged(GameManager.Instance.CurrentCoins);
     }
 
-    private void Update()
+    private void OnDisable()
     {
-        // Controlla e aggiorna i pulsanti ogni frame (opzionale, ma semplice)
-        // TODO: si potrebbe gestire meglio usando i DesignPattern...
-        UpdateTurretButtons();
-        UpdatePlayerCoins();
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnCoinsChanged -= OnCoinsChanged;
     }
 
-    private void UpdatePlayerCoins()
+    private void OnCoinsChanged(int newCoinAmount)
     {
-        playerCoins.text = $"{GameManager.Instance.CurrentCoins}";
+        UpdatePlayerCoins(newCoinAmount);
+        UpdateTurretButtons(newCoinAmount);
     }
 
-    public void UpdateTurretButtons()
+    private void UpdatePlayerCoins(int coins)
     {
-        int playerCoins = GameManager.Instance.CurrentCoins;
+        playerCoins.text = $"{coins}";
+    }
 
+    private void UpdateTurretButtons(int playerCoins)
+    {
         foreach (var button in turretButtons)
         {
             button.UpdateButtonState(playerCoins);

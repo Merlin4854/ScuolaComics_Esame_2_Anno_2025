@@ -1,3 +1,4 @@
+using System;
 using DesignPatterns.Generics;
 using UnityEngine;
 
@@ -9,35 +10,36 @@ public class GameManager : Singleton<GameManager>
 
     public int CurrentCoins => currentCoins;
 
+    
+    public event Action<int> OnCoinsChanged;
+
     public override void Awake()
     {
         base.Awake();
         currentCoins = startingCoins;
+        OnCoinsChanged?.Invoke(currentCoins);  
     }
 
     public void AddCoins(int amount)
     {
-        // TODO: Le monete vengono aggiunte alla distruzione dei nemici o alla rimozione delle torrette. Usare bene i messaggi in maniera intelligente
-
         currentCoins += amount;
         Debug.Log($"Aggiunti {amount} coins. Coins totali: {currentCoins}");
-        // TODO: Aggiungere un evento qui per aggiornare l'UI
+        OnCoinsChanged?.Invoke(currentCoins);  
     }
 
-    // Metodo per spendere monete
     public bool SpendCoins(int amount)
     {
         if (currentCoins >= amount)
         {
             currentCoins -= amount;
             Debug.Log($"Spesi {amount} coins. Coins rimasti: {currentCoins}");
-            // TODO: Aggiungere un evento qui per aggiornare l'UI
+            OnCoinsChanged?.Invoke(currentCoins);  
             return true;
         }
         else
         {
             Debug.LogWarning("Non hai abbastanza monete!");
-            // TODO: Aggiungere un evento qui per aggiornare l'UI
+            OnCoinsChanged?.Invoke(currentCoins);  
             return false;
         }
     }

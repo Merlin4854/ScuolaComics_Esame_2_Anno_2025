@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2887825084856791242}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cannon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7828174978622170083}
   - component: {fileID: 5132447468255388508}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CannonGraphics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -130,7 +130,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1902694685496250442}
   - component: {fileID: 3677713323675064950}
-  m_Layer: 0
+  - component: {fileID: 8952601383909875874}
+  m_Layer: 6
   m_Name: Tower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,10 +169,49 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   range: 2
   fireRate: 1
-  projectileSpeed: 1000
+  level: 1
+  cost: 50
+  upgradeCost: 30
+  damageAmount: 1
   cannonGraphics: {fileID: 2887825084856791242}
   firePoint: {fileID: 408199583184931185}
   projectilePrefab: {fileID: 6511734976158796608, guid: abb6f8dc185a8804e87ff4f1c0e44657, type: 3}
+--- !u!58 &8952601383909875874
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2169624064719797929}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.3
 --- !u!1 &8379643078284845944
 GameObject:
   m_ObjectHideFlags: 0
@@ -182,7 +222,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8946611883361401282}
   - component: {fileID: 8368074004574274151}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BaseGraphics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -268,7 +308,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 408199583184931185}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: FirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}

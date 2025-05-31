@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8433496916863973338}
   - component: {fileID: 326571970884782984}
+  - component: {fileID: 7896565357529190744}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -45,3 +46,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingCoins: 200
+--- !u!114 &7896565357529190744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8220157896684855570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d52e23f52dd4e4149abd4ff7800ab8c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  defaultColor: {r: 1, g: 1, b: 1, a: 1}
+  towerGridManager: {fileID: 0}
+  towerInfoUI: {fileID: 0}
